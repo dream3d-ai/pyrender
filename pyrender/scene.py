@@ -561,6 +561,10 @@ class Scene(object):
         # add every node with geometry to the pyrender scene
         for node in trimesh_scene.graph.nodes_geometry:
             pose, geom_name = trimesh_scene.graph[node]
-            scene_pr.add(geometries[geom_name], pose=pose)
+            scene_pr.add(
+                geometries[geom_name],
+                pose=pose,
+                name=geom_name,
+            )
 
         return scene_pr
