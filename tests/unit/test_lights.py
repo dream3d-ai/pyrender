@@ -1,19 +1,24 @@
 import numpy as np
 import pytest
 
-from pyrender import (DirectionalLight, SpotLight, PointLight, Texture,
-                      PerspectiveCamera, OrthographicCamera)
+from pyrender import (
+    DirectionalLight,
+    SpotLight,
+    PointLight,
+    Texture,
+    PerspectiveCamera,
+    OrthographicCamera,
+)
 from pyrender.constants import SHADOW_TEX_SZ
 
 
 def test_directional_light():
-
     d = DirectionalLight()
     assert d.name is None
     assert np.all(d.color == 1.0)
     assert d.intensity == 1.0
 
-    d.name = 'direc'
+    d.name = "direc"
     with pytest.raises(ValueError):
         d.color = None
     with pytest.raises(TypeError):
@@ -35,7 +40,6 @@ def test_directional_light():
 
 
 def test_spot_light():
-
     s = SpotLight()
     assert s.name is None
     assert np.all(s.color == 1.0)
@@ -82,7 +86,6 @@ def test_spot_light():
 
 
 def test_point_light():
-
     s = PointLight()
     assert s.name is None
     assert np.all(s.color == 1.0)

@@ -5,7 +5,6 @@ from pyrender import PerspectiveCamera, OrthographicCamera
 
 
 def test_perspective_camera():
-
     # Set up constants
     znear = 0.05
     zfar = 100
@@ -23,7 +22,7 @@ def test_perspective_camera():
     assert p.znear == 0.05
     assert p.zfar is None
     assert p.aspectRatio is None
-    p.name = 'asdf'
+    p.name = "asdf"
     p.name = None
 
     with pytest.raises(ValueError):
@@ -67,26 +66,38 @@ def test_perspective_camera():
 
     assert np.allclose(
         p.get_projection_matrix(width, height),
-        np.array([
-            [1.0 / (width / height * np.tan(yfov / 2.0)), 0.0, 0.0, 0.0],
-            [0.0, 1.0 / np.tan(yfov / 2.0), 0.0, 0.0],
-            [0.0, 0.0, (zfar + znear) / (znear - zfar),
-                (2 * zfar * znear) / (znear - zfar)],
-            [0.0, 0.0, -1.0, 0.0]
-        ])
+        np.array(
+            [
+                [1.0 / (width / height * np.tan(yfov / 2.0)), 0.0, 0.0, 0.0],
+                [0.0, 1.0 / np.tan(yfov / 2.0), 0.0, 0.0],
+                [
+                    0.0,
+                    0.0,
+                    (zfar + znear) / (znear - zfar),
+                    (2 * zfar * znear) / (znear - zfar),
+                ],
+                [0.0, 0.0, -1.0, 0.0],
+            ]
+        ),
     )
 
     # NFA
     p.aspectRatio = aspectRatio
     assert np.allclose(
         p.get_projection_matrix(width, height),
-        np.array([
-            [1.0 / (aspectRatio * np.tan(yfov / 2.0)), 0.0, 0.0, 0.0],
-            [0.0, 1.0 / np.tan(yfov / 2.0), 0.0, 0.0],
-            [0.0, 0.0, (zfar + znear) / (znear - zfar),
-                (2 * zfar * znear) / (znear - zfar)],
-            [0.0, 0.0, -1.0, 0.0]
-        ])
+        np.array(
+            [
+                [1.0 / (aspectRatio * np.tan(yfov / 2.0)), 0.0, 0.0, 0.0],
+                [0.0, 1.0 / np.tan(yfov / 2.0), 0.0, 0.0],
+                [
+                    0.0,
+                    0.0,
+                    (zfar + znear) / (znear - zfar),
+                    (2 * zfar * znear) / (znear - zfar),
+                ],
+                [0.0, 0.0, -1.0, 0.0],
+            ]
+        ),
     )
     assert np.allclose(
         p.get_projection_matrix(), p.get_projection_matrix(width, height)
@@ -97,12 +108,14 @@ def test_perspective_camera():
     p.aspectRatio = None
     assert np.allclose(
         p.get_projection_matrix(width, height),
-        np.array([
-            [1.0 / (width / height * np.tan(yfov / 2.0)), 0.0, 0.0, 0.0],
-            [0.0, 1.0 / np.tan(yfov / 2.0), 0.0, 0.0],
-            [0.0, 0.0, -1.0, -2.0 * znear],
-            [0.0, 0.0, -1.0, 0.0]
-        ])
+        np.array(
+            [
+                [1.0 / (width / height * np.tan(yfov / 2.0)), 0.0, 0.0, 0.0],
+                [0.0, 1.0 / np.tan(yfov / 2.0), 0.0, 0.0],
+                [0.0, 0.0, -1.0, -2.0 * znear],
+                [0.0, 0.0, -1.0, 0.0],
+            ]
+        ),
     )
 
 
@@ -155,10 +168,12 @@ def test_orthographic_camera():
 
     assert np.allclose(
         c.get_projection_matrix(),
-        np.array([
-            [1.0 / xm, 0, 0, 0],
-            [0, 1.0 / ym, 0, 0],
-            [0, 0, 2.0 / (n - f), (f + n) / (n - f)],
-            [0, 0, 0, 1.0]
-        ])
+        np.array(
+            [
+                [1.0 / xm, 0, 0, 0],
+                [0, 1.0 / ym, 0, 0],
+                [0, 0, 2.0 / (n - f), (f + n) / (n - f)],
+                [0, 0, 0, 1.0],
+            ]
+        ),
     )

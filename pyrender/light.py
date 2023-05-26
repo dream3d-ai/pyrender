@@ -15,7 +15,6 @@ from .constants import SHADOW_TEX_SZ
 from .camera import OrthographicCamera, PerspectiveCamera
 
 
-
 @six.add_metaclass(abc.ABCMeta)
 class Light(object):
     """Base class for all light objects.
@@ -31,11 +30,8 @@ class Light(object):
     name : str, optional
         Name of the light.
     """
-    def __init__(self,
-                 color=None,
-                 intensity=None,
-                 name=None):
 
+    def __init__(self, color=None, intensity=None, name=None):
         if color is None:
             color = np.ones(3)
         if intensity is None:
@@ -49,8 +45,7 @@ class Light(object):
 
     @property
     def name(self):
-        """str : The user-defined name of this object.
-        """
+        """str : The user-defined name of this object."""
         return self._name
 
     @name.setter
@@ -61,8 +56,7 @@ class Light(object):
 
     @property
     def color(self):
-        """(3,) float : The light's color.
-        """
+        """(3,) float : The light's color."""
         return self._color
 
     @color.setter
@@ -71,8 +65,7 @@ class Light(object):
 
     @property
     def intensity(self):
-        """float : The light's intensity in candela or lux.
-        """
+        """float : The light's intensity in candela or lux."""
         return self._intensity
 
     @intensity.setter
@@ -81,8 +74,7 @@ class Light(object):
 
     @property
     def shadow_texture(self):
-        """:class:`.Texture` : A texture used to hold shadow maps for this light.
-        """
+        """:class:`.Texture` : A texture used to hold shadow maps for this light."""
         return self._shadow_texture
 
     @shadow_texture.setter
@@ -140,10 +132,7 @@ class DirectionalLight(Light):
         Name of the light.
     """
 
-    def __init__(self,
-                 color=None,
-                 intensity=None,
-                 name=None):
+    def __init__(self, color=None, intensity=None, name=None):
         super(DirectionalLight, self).__init__(
             color=color,
             intensity=intensity,
@@ -160,8 +149,9 @@ class DirectionalLight(Light):
         """
         if size is None:
             size = SHADOW_TEX_SZ
-        self.shadow_texture = Texture(width=size, height=size,
-                                      source_channels='D', data_format=GL_FLOAT)
+        self.shadow_texture = Texture(
+            width=size, height=size, source_channels="D", data_format=GL_FLOAT
+        )
 
     def _get_shadow_camera(self, scene_scale):
         """Generate and return a shadow mapping camera for this light.
@@ -180,7 +170,7 @@ class DirectionalLight(Light):
             znear=0.01 * scene_scale,
             zfar=10 * scene_scale,
             xmag=scene_scale,
-            ymag=scene_scale
+            ymag=scene_scale,
         )
 
 
@@ -205,11 +195,7 @@ class PointLight(Light):
         Name of the light.
     """
 
-    def __init__(self,
-                 color=None,
-                 intensity=None,
-                 range=None,
-                 name=None):
+    def __init__(self, color=None, intensity=None, range=None, name=None):
         super(PointLight, self).__init__(
             color=color,
             intensity=intensity,
@@ -219,8 +205,7 @@ class PointLight(Light):
 
     @property
     def range(self):
-        """float : The cutoff distance for the light.
-        """
+        """float : The cutoff distance for the light."""
         return self._range
 
     @range.setter
@@ -228,7 +213,7 @@ class PointLight(Light):
         if value is not None:
             value = float(value)
             if value <= 0:
-                raise ValueError('Range must be > 0')
+                raise ValueError("Range must be > 0")
             self._range = value
         self._range = value
 
@@ -240,7 +225,7 @@ class PointLight(Light):
         size : int, optional
             Size of texture map. Must be a positive power of two.
         """
-        raise NotImplementedError('Shadows not implemented for point lights')
+        raise NotImplementedError("Shadows not implemented for point lights")
 
     def _get_shadow_camera(self, scene_scale):
         """Generate and return a shadow mapping camera for this light.
@@ -255,7 +240,7 @@ class PointLight(Light):
         camera : :class:`.Camera`
             The camera used to render shadowmaps for this light.
         """
-        raise NotImplementedError('Shadows not implemented for point lights')
+        raise NotImplementedError("Shadows not implemented for point lights")
 
 
 class SpotLight(Light):
@@ -293,13 +278,15 @@ class SpotLight(Light):
         Name of the light.
     """
 
-    def __init__(self,
-                 color=None,
-                 intensity=None,
-                 range=None,
-                 innerConeAngle=0.0,
-                 outerConeAngle=(np.pi / 4.0),
-                 name=None):
+    def __init__(
+        self,
+        color=None,
+        intensity=None,
+        range=None,
+        innerConeAngle=0.0,
+        outerConeAngle=(np.pi / 4.0),
+        name=None,
+    ):
         super(SpotLight, self).__init__(
             name=name,
             color=color,
@@ -311,32 +298,29 @@ class SpotLight(Light):
 
     @property
     def innerConeAngle(self):
-        """float : The inner cone angle in radians.
-        """
+        """float : The inner cone angle in radians."""
         return self._innerConeAngle
 
     @innerConeAngle.setter
     def innerConeAngle(self, value):
         if value < 0.0 or value > self.outerConeAngle:
-            raise ValueError('Invalid value for inner cone angle')
+            raise ValueError("Invalid value for inner cone angle")
         self._innerConeAngle = float(value)
 
     @property
     def outerConeAngle(self):
-        """float : The outer cone angle in radians.
-        """
+        """float : The outer cone angle in radians."""
         return self._outerConeAngle
 
     @outerConeAngle.setter
     def outerConeAngle(self, value):
         if value < 0.0 or value > np.pi / 2.0 + 1e-9:
-            raise ValueError('Invalid value for outer cone angle')
+            raise ValueError("Invalid value for outer cone angle")
         self._outerConeAngle = float(value)
 
     @property
     def range(self):
-        """float : The cutoff distance for the light.
-        """
+        """float : The cutoff distance for the light."""
         return self._range
 
     @range.setter
@@ -344,7 +328,7 @@ class SpotLight(Light):
         if value is not None:
             value = float(value)
             if value <= 0:
-                raise ValueError('Range must be > 0')
+                raise ValueError("Range must be > 0")
             self._range = value
         self._range = value
 
@@ -358,8 +342,9 @@ class SpotLight(Light):
         """
         if size is None:
             size = SHADOW_TEX_SZ
-        self.shadow_texture = Texture(width=size, height=size,
-                                      source_channels='D', data_format=GL_FLOAT)
+        self.shadow_texture = Texture(
+            width=size, height=size, source_channels="D", data_format=GL_FLOAT
+        )
 
     def _get_shadow_camera(self, scene_scale):
         """Generate and return a shadow mapping camera for this light.
@@ -378,8 +363,8 @@ class SpotLight(Light):
             znear=0.01 * scene_scale,
             zfar=10 * scene_scale,
             yfov=np.clip(2 * self.outerConeAngle + np.pi / 16.0, 0.0, np.pi),
-            aspectRatio=1.0
+            aspectRatio=1.0,
         )
 
 
-__all__ = ['Light', 'DirectionalLight', 'SpotLight', 'PointLight']
+__all__ = ["Light", "DirectionalLight", "SpotLight", "PointLight"]
