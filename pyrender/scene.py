@@ -565,6 +565,7 @@ class Scene(object):
                 geometries[geom_name],
                 pose=pose,
                 name=geom_name,
+                geom_name=geom_name,
             )
 
         return scene_pr
